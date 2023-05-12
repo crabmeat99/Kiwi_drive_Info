@@ -1,0 +1,11 @@
+# Ignore build output
+*.mexa64
+Kiwi_control
+Kiwi_control_ert_linux/
+*r201*
+slprj/
+*.mat
+
+# Ignore Emacs droppings
+\#*
+.\#*

@@ -1,0 +1,9 @@
+% Builds the CAN.mexa64 shared library which implements the Simulink block
+% for CAN communication with the Roboteq power amp (configured for the Kiwi
+% robot)
+% This script must be called if the file CAN.mexa64 is not present, or in
+% case that any of the source files in bci_kiwi is changed.
+mex bci_kiwi/CAN.c bci_kiwi/bci.c bci_kiwi/ipci.c bci_kiwi/pc_i.c ...
+    bci_kiwi/bapfw165.c bci_kiwi/filterlist.c bci_kiwi/bapfw320.c ...
+    bci_kiwi/ipci_lin.c bci_kiwi/bapfw161.c bci_kiwi/dpram.c ...
+    bci_kiwi/kiwi.c -largeArrayDims CFLAGS="\$CFLAGS -std=c99"

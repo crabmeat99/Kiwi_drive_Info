@@ -1,0 +1,3 @@
+[submodule "bci_kiwi"]
+	path = bci_kiwi
+	url = git@github.com:larics/bci.git
