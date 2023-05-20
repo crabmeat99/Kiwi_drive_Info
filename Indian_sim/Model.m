@@ -192,7 +192,7 @@ for i = 1:5:length(t)
 	end
 	plot(q_desired(1,:),q_desired(2,:),'k--');
 	plot(x(1:i),y(1:i),'m-');
-	%axis ([-1.2*l+b_lx,1.2*l+a_lx,-1.2*l+b_ly,1.2*l+a_ly])
+	axis ([-1.2*l+b_lx,1.2*l+a_lx,-1.2*l+b_ly,1.2*l+a_ly])
 	axis square
 	grid on;
 	pause(0.1)
