@@ -9,11 +9,11 @@ close all;
 clc;
 
 
-P = 4;
+P = 4; 
 
-dt = 0.1;
-ts = 30;
-t = 0:dt:ts;
+dt = 0.1; %step time
+ts = 30; %Total duration of the sim
+t = 0:dt:ts; %timespan
 
 
 phi1 = 60; phi2 = 120 + phi1; phi3 = 120 + phi2;
@@ -44,12 +44,13 @@ for i = 1:length(t)
 			sin(eta(3,i)), cos(eta(3,i)),0;
 			0,0,1];
 	zeta(:,i) = inv(J_eta)*P*e(:,i);
-	W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
-		-sind(phi2),cosd(phi2),l;
-		-sind(phi3),cosd(phi3),l;]; %Wheel Config
-	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); %accounts for momentum starts slow 
-	W = inv(W_inv);
-	eta_dot(:,i) = J_eta*W*omega(:,i);
+	%W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
+		%-sind(phi2),cosd(phi2),l;
+		%-sind(phi3),cosd(phi3),l;]; %Wheel Config
+	W_inv = a *[0 , -1, l; cos(pi/6), sin(pi/6), l; -cos(pi/6), sin(pi/6), l];
+	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); % Wheel speedsaccounts for momentum starts slow 
+	W = inv(W_inv); %Back to world coordinates
+	eta_dot(:,i) = J_eta*W*omega(:,i); %adds Pos to eta for next eta
 	eta(:,i+1) = eta(:,i) + dt*eta_dot(:,i);
 end
 
