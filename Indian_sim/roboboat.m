@@ -15,28 +15,20 @@ w = 0.025; % Half thickness of the wheel
 eta(:,1) = [0;0;0];
 rx = 2; ry = 1; wx = 0.1; wy = 0.1;
 for i = 1:length(t)
-	xd = rx*sin(wx*t(i));
-	yd = ry-ry*cos(wy*t(i));
-	xd_dot = rx*wx*cos(wx*t(i));
-    yd_dot = ry*wy*sin(wy*t(i));
-	if xd_dot==0 && yd_dot ==0
-		psid = 0;
-	else
-		psid = wrapTo2Pi(atan2(yd_dot,xd_dot));
-	end
 	xd = 0.05*t(i); yd = 0.05*t(i); psid = pi/4; % TRY: change pi/4 to 0
 	eta_d(:,i) = [xd;yd;psid];  % TRY: change psid to 0*psid 
 	e(:,i) = eta_d(:,i) - eta(:,i);
 	J_eta = [cos(eta(3,i)),-sin(eta(3,i)),0;
 			sin(eta(3,i)), cos(eta(3,i)),0;
 			0,0,1];
-	zeta(:,i) = inv(J_eta)*4*e(:,i);
-	W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
-		-sind(phi2),cosd(phi2),l;
-		-sind(phi3),cosd(phi3),l;]; %Wheel Config
-	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); %accounts for momentum starts slow 
-	W = inv(W_inv);
-	eta_dot(:,i) = J_eta*W*omega(:,i);
+	zeta(:,i) = inv(J_eta)*4*e(:,i); 
+	%W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
+		%-sind(phi2),cosd(phi2),l;
+		%-sind(phi3),cosd(phi3),l;];
+    W_inv = a *[0 , -1, l; cos(pi/6), sin(pi/6), l; -cos(pi/6), sin(pi/6), l];
+    omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); %accounts for momentum starts slow 
+	W = inv(W_inv) %Back to world 
+	eta_dot(:,i) = J_eta*W*omega(:,i); % adds pos to eta for next eta
 	eta(:,i+1) = eta(:,i) + dt*eta_dot(:,i);
 end
 
