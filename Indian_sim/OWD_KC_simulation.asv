@@ -2,8 +2,9 @@ clear all;
 close all;
 clc;
 
-dt = 0.1; %step time
-ts = 30;  %total duration of the sim
+
+dt = 0.1;
+ts = 30;
 t = 0:dt:ts;
 
 phi1 = 0; phi2 = 120 + phi1; phi3 = 120 + phi2;
