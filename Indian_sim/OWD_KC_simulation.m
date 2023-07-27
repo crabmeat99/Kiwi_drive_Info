@@ -8,16 +8,18 @@ clear all;
 close all;
 clc;
 
-P = 4;
 
-dt = 0.1;
-ts = 30;
-t = 0:dt:ts;
+P = 4; 
 
-phi1 = 0; phi2 = 120 + phi1; phi3 = 120 + phi2;
-th = [phi1,phi2,phi3,phi1];
+dt = 0.1; %step time
+ts = 30; %Total duration of the sim
+t = 0:dt:ts; %timespan
 
-a = 0.1; % Wheel radius
+
+phi1 = 60; phi2 = 120 + phi1; phi3 = 120 + phi2;
+th = [phi1,phi2,phi3,phi1]; % The angle of three wheels from the center 
+
+a = 0.1; % Wheel radius 10 cm
 l = 0.5; % Wheel centre to vehicle frame
 w = 0.025; % Half thickness of the wheel
 eta(:,1) = [0;0;0];
@@ -42,12 +44,13 @@ for i = 1:length(t)
 			sin(eta(3,i)), cos(eta(3,i)),0;
 			0,0,1];
 	zeta(:,i) = inv(J_eta)*P*e(:,i);
-	W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
-		-sind(phi2),cosd(phi2),l;
-		-sind(phi3),cosd(phi3),l;];
-	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i);
-	W = inv(W_inv);
-	eta_dot(:,i) = J_eta*W*omega(:,i);
+	%W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
+		%-sind(phi2),cosd(phi2),l;
+		%-sind(phi3),cosd(phi3),l;]; %Wheel Config
+	W_inv = a *[0 , -1, l; cos(pi/6), sin(pi/6), l; -cos(pi/6), sin(pi/6), l];
+	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); % Wheel speedsaccounts for momentum starts slow 
+	W = inv(W_inv); %Back to world coordinates
+	eta_dot(:,i) = J_eta*W*omega(:,i); %adds Pos to eta for next eta
 	eta(:,i+1) = eta(:,i) + dt*eta_dot(:,i);
 end
 
@@ -57,10 +60,10 @@ for i = 1:5:length(t)
     psi = eta(3,i);
     R = [cos(psi), -sin(psi);sin(psi),cos(psi)];
     veh_s = R*([l*cosd(th);l*sind(th)]);
-    wheel_g = [-a,a,a,-a,-a;-w,-w,w,w,-w];
+    wheel_g = [-a,a,a,-a,-a;-w,-w,w,w,-w]; %
     roller_g = [-a/3,a/3,a/3,-a/3,-a/3;-w,-w,w,w,-w];
     R1 = [cosd(phi1+90),-sind(phi1+90);
-		    sind(phi1+90), cosd(phi1+90);];
+		    sind(phi1+90), cosd(phi1+90);]; %wheels rotating
     R2 = [cosd(phi2+90),-sind(phi2+90);
 		    sind(phi2+90), cosd(phi2+90);];
     R3 = [cosd(phi3+90),-sind(phi3+90);
