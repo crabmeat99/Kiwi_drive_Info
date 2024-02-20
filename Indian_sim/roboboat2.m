@@ -27,19 +27,19 @@ eta(:,1) = [0;0;0];
 rx = 2; ry = 1; wx = 0.1; wy = 0.1;
 for i = 1:length(t)
     % Circular path
-	xd = rx*sin(wx*t(i));
-	yd = ry-ry*cos(wy*t(i));
-	xd_dot = rx*wx*cos(wx*t(i));
-    yd_dot = ry*wy*sin(wy*t(i));
-	if xd_dot==0 && yd_dot ==0
-		psid = 0;
-	else
-		psid = wrapTo2Pi(atan2(yd_dot,xd_dot));
-	end
+    % xd = rx*sin(wx*t(i));
+    % yd = ry-ry*cos(wy*t(i));
+    % xd_dot = rx*wx*cos(wx*t(i));
+    % yd_dot = ry*wy*sin(wy*t(i));
+    % if xd_dot==0 && yd_dot ==0
+	%     psid = 0;
+    % else
+	%     psid = wrapTo2Pi(atan2(yd_dot,xd_dot));
+    % end
      
-    % Linear path 0.05 in x and y.  Constant angle
-	% xd = 0.05*t(i); yd = 0.05*t(i); psid =pi/4; % TRY: change pi/4 to 0
-
+    % % Linear path 0.05 in x and y.  Constant angle
+	%xd = 0.05*t(i); yd = 0.05*t(i); psid =0*pi/4; % TRY: change pi/4 to 0
+    xd = 0; yd = 0.05*t(i); psid =0*pi/2; % TRY: change pi/4 to 0
 
 	eta_d(:,i) = [xd;yd;psid];  % TRY: change psid to 0*psid 
 	e(:,i) = eta_d(:,i) - eta(:,i);
@@ -50,9 +50,13 @@ for i = 1:length(t)
 	%W_inv = 3*1/a*[-sind(phi1),cosd(phi1),l;
 		%-sind(phi2),cosd(phi2),l;
 		%-sind(phi3),cosd(phi3),l;]; %Wheel Config
-	W_inv = a *[0 , -1, l; cos(pi/6), sin(pi/6), l; -cos(pi/6), sin(pi/6), l];
-	omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); % Wheel speedsaccounts for momentum starts slow 
-	W = inv(W_inv); %Back to world coordinates
+	W_inv = a *[0 , -1, l; 
+                cos(pi/6), sin(pi/6), l;
+                -cos(pi/6), sin(pi/6), l];
+	% omega(:,i) = (0.9-exp(-t(i)))*W_inv*zeta(:,i); % Wheel speeds accounts for momentum starts slow 
+	omega(:,i) = W_inv*zeta(:,i); % Wheel speeds accounts for momentum starts slow 
+	
+    W = inv(W_inv); %Back to world coordinates
 	eta_dot(:,i) = J_eta*W*omega(:,i); %adds Pos to eta for next eta
 	eta(:,i+1) = eta(:,i) + dt*eta_dot(:,i);
 end
